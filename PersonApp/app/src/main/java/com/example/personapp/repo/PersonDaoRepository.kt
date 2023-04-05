@@ -1,36 +1,52 @@
 package com.example.personapp.repo
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.personapp.entity.Person
+import com.example.personapp.room.DataBase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-class PersonDaoRepository {
+class PersonDaoRepository(var application: Application) {
     var personList = MutableLiveData<List<Person>>()
-
+    var db:DataBase
     init {
+        db = DataBase.databaseAccess(application)!!
         personList=MutableLiveData()
     }
     fun getPerson():MutableLiveData<List<Person>>{
      return personList
     }
     fun setAllPerson(){
-        val list = mutableListOf<Person>()
-        val person1 = Person(1, "Ahmet", "11111")
-        val person2 = Person(2, "Zeynep", "22222")
-        list.add(person1)
-        list.add(person2)
-        personList.value= list
+      val job: Job = CoroutineScope(Dispatchers.Main).launch{
+          personList.value= db.personDao().allPerson()
+      }
     }
     fun searchPerson(searched:String){
-        Log.e("Person Search",searched)
+        val job: Job = CoroutineScope(Dispatchers.Main).launch{
+            personList.value= db.personDao().searchPerson(searched)
+        }
     }
     fun personRegister(personName:String, personNumber:String){
-        Log.e("Person Register","$personName - $personNumber")
+       val job: Job= CoroutineScope(Dispatchers.Main).launch {
+           val newPerson = Person(0,personName,personNumber)
+           db.personDao().addPerson(newPerson)
+       }
     }
     fun personUpdate(personId:Int, personName:String, personNumber: String){
-        Log.e("Person Update","$personName - $personNumber - $personId")
+        val job: Job= CoroutineScope(Dispatchers.Main).launch {
+            val updatedPerson = Person(personId,personName,personNumber)
+            db.personDao().updatePerson(updatedPerson)
+        }
     }
     fun personDelete(personId: Int){
-        Log.e("Person delete","$personId")
+        val job: Job= CoroutineScope(Dispatchers.Main).launch {
+            val deletedPerson = Person(personId,"","")
+            db.personDao().deletePerson(deletedPerson)
+            setAllPerson()
+        }
     }
 }

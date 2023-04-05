@@ -1,5 +1,6 @@
 package com.example.personapp
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,20 +13,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.personapp.viewmodel.MainPageViewModel
 import com.example.personapp.viewmodel.PersonRegisterViewModel
+import com.example.personapp.viewmodelfactory.MainPageViewModelFactory
+import com.example.personapp.viewmodelfactory.RegisterPageViewModelFactory
 
 @Composable
 fun PersonRegister() {
     val tfPersonName = remember { mutableStateOf("") }
     val tfPersonNumber = remember { mutableStateOf("") }
     val localFocusManager = LocalFocusManager.current
-
-    val viewModel:PersonRegisterViewModel= viewModel()
+    val context = LocalContext.current
+    val viewModel : PersonRegisterViewModel = viewModel(
+        factory = RegisterPageViewModelFactory(context.applicationContext as Application)
+    )
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(text = "Person Register") })

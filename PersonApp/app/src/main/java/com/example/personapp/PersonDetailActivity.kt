@@ -1,5 +1,6 @@
 package com.example.personapp
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,17 +13,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.personapp.entity.Person
 import com.example.personapp.viewmodel.DetailPageViewModel
+import com.example.personapp.viewmodel.MainPageViewModel
+import com.example.personapp.viewmodelfactory.DetailPageViewModelFactory
+import com.example.personapp.viewmodelfactory.MainPageViewModelFactory
 
 @Composable
 fun PersonDetail(personData: Person) {
     val tfPersonName = remember { mutableStateOf("") }
     val tfPersonNumber = remember { mutableStateOf("") }
-    val viewModel: DetailPageViewModel = viewModel()
+    val context = LocalContext.current
+    val viewModel : DetailPageViewModel = viewModel(
+        factory = DetailPageViewModelFactory(context.applicationContext as Application)
+    )
     val localFocusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = true) {

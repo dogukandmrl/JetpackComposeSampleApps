@@ -1,5 +1,6 @@
 package com.example.personapp
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +30,7 @@ import androidx.navigation.navArgument
 import com.example.personapp.entity.Person
 import com.example.personapp.ui.theme.PersonAppTheme
 import com.example.personapp.viewmodel.MainPageViewModel
+import com.example.personapp.viewmodelfactory.MainPageViewModelFactory
 import com.google.gson.Gson
 
 class MainActivity : ComponentActivity() {
@@ -81,8 +84,14 @@ fun PageChanger() {
 fun MainPage(navController: NavController) {
     val isSearch = remember { mutableStateOf(false) }
     val tf = remember { mutableStateOf("") }
-    val viewModel : MainPageViewModel= viewModel()
+    val context = LocalContext.current
+    val viewModel : MainPageViewModel= viewModel(
+        factory = MainPageViewModelFactory(context.applicationContext as Application)
+    )
     val personList = viewModel.personList.observeAsState(listOf())
+    LaunchedEffect(key1 = true){
+        viewModel.setContact()
+    }
     Scaffold(
         topBar = {
             TopAppBar(
