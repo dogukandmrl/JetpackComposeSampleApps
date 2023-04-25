@@ -15,7 +15,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomStart
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -67,7 +67,7 @@ fun HomeScreen() {
                     ),
                     Feature(
                         title = "Calming sounds",
-                        R.drawable.ic_headphone,
+                       R.drawable.ic_headphone,
                         Beige1,
                         Beige2,
                         Beige3
@@ -75,19 +75,18 @@ fun HomeScreen() {
                 )
             )
         }
+        BottomMenu(items = listOf(
+            BottomMenuContent("Home", R.drawable.ic_home),
+            BottomMenuContent("Meditate", R.drawable.ic_bubble),
+            BottomMenuContent("Sleep", R.drawable.ic_moon),
+            BottomMenuContent("Music", R.drawable.ic_music),
+            BottomMenuContent("Profile", R.drawable.ic_profile),
+        ), modifier = Modifier.align(Alignment.BottomCenter))
     }
-    BottomNavBar(items = listOf(
-        BottomMenuContent("Home",R.drawable.ic_home),
-        BottomMenuContent("Meditate",R.drawable.ic_bubble),
-        BottomMenuContent("Sleep",R.drawable.ic_moon),
-        BottomMenuContent("Music",R.drawable.ic_music),
-        BottomMenuContent("Profile",R.drawable.ic_profile)
-
-    ), modifier = Modifier.align(Alignment.BottomCenter))
 }
 
 @Composable
-fun BottomNavBar(
+fun BottomMenu(
     items: List<BottomMenuContent>,
     modifier: Modifier = Modifier,
     activeHighlightColor: Color = ButtonBlue,
@@ -121,47 +120,45 @@ fun BottomNavBar(
 }
 
 @Composable
-fun ButtomMenuItem(
+fun BottomMenuItem(
     item: BottomMenuContent,
     isSelected: Boolean = false,
     activeHighlightColor: Color = ButtonBlue,
     activeTextColor: Color = Color.White,
     inactiveTextColor: Color = AquaBlue,
     onItemClick: () -> Unit
-
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.clickable {
             onItemClick()
-        }) {
+        }
+    ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
-                .background(
-                    if (isSelected) activeHighlightColor else Color.Transparent
-                )
+                .background(if (isSelected) activeHighlightColor else Color.Transparent)
                 .padding(10.dp)
         ) {
             Icon(
                 painter = painterResource(id = item.iconId),
                 contentDescription = item.title,
                 tint = if (isSelected) activeTextColor else inactiveTextColor,
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
         Text(
             text = item.title,
-            color = if (isSelected) activeTextColor else inactiveTextColor
+            color = if(isSelected) activeTextColor else inactiveTextColor
         )
     }
 }
 
 @Composable
 fun GreetingSection(
-    name: String = "Dogukan"
+    name: String = "Philipp"
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -170,15 +167,23 @@ fun GreetingSection(
             .fillMaxWidth()
             .padding(15.dp)
     ) {
-        Column(verticalArrangement = Arrangement.Center) {
-            Text(text = "Good Morning, $name", style = MaterialTheme.typography.h2)
-            Text(text = "We Wish you have a good day !", style = MaterialTheme.typography.body1)
+        Column(
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Good morning, $name",
+                style = MaterialTheme.typography.h2
+            )
+            Text(
+                text = "We wish you have a good day!",
+                style = MaterialTheme.typography.body1
+            )
         }
         Icon(
             painter = painterResource(id = R.drawable.ic_search),
             contentDescription = "Search",
             tint = Color.White,
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.size(24.dp)
         )
     }
 }
@@ -221,38 +226,40 @@ fun CurrentMeditation(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .padding(15.dp)
-            .clip(
-                RoundedCornerShape(10.dp)
-            )
+            .clip(RoundedCornerShape(10.dp))
             .background(color)
             .padding(horizontal = 15.dp, vertical = 20.dp)
             .fillMaxWidth()
     ) {
         Column {
-            Text(text = "Daily Thought", style = MaterialTheme.typography.h2)
             Text(
-                text = "Meditation * 3-10 min",
+                text = "Daily Thought",
+                style = MaterialTheme.typography.h2
+            )
+            Text(
+                text = "Meditation • 3-10 min",
                 style = MaterialTheme.typography.body1,
                 color = TextWhite
             )
         }
         Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
                 .background(ButtonBlue)
-                .padding(10.dp),
-            contentAlignment = Alignment.Center
+                .padding(10.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_play),
-                contentDescription = "play",
+                contentDescription = "Play",
                 tint = Color.White,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.size(16.dp)
             )
         }
     }
 }
+
 @ExperimentalFoundationApi
 @Composable
 fun FeatureSection(features: List<Feature>) {
@@ -268,15 +275,14 @@ fun FeatureSection(features: List<Feature>) {
             modifier = Modifier.fillMaxHeight()
         ) {
             items(features.size) {
-                FeatureItems(feature = features[it])
+                FeatureItem(feature = features[it])
             }
         }
-
     }
 }
 
 @Composable
-fun FeatureItems(
+fun FeatureItem(
     feature: Feature
 ) {
     BoxWithConstraints(
@@ -289,6 +295,7 @@ fun FeatureItems(
         val width = constraints.maxWidth
         val height = constraints.maxHeight
 
+        // Medium colored path
         val mediumColoredPoint1 = Offset(0f, height * 0.3f)
         val mediumColoredPoint2 = Offset(width * 0.1f, height * 0.35f)
         val mediumColoredPoint3 = Offset(width * 0.4f, height * 0.05f)
@@ -305,6 +312,8 @@ fun FeatureItems(
             lineTo(-100f, height.toFloat() + 100f)
             close()
         }
+
+        // Light colored path
         val lightPoint1 = Offset(0f, height * 0.35f)
         val lightPoint2 = Offset(width * 0.1f, height * 0.4f)
         val lightPoint3 = Offset(width * 0.3f, height * 0.35f)
@@ -321,7 +330,10 @@ fun FeatureItems(
             lineTo(-100f, height.toFloat() + 100f)
             close()
         }
-        Canvas(modifier = Modifier.fillMaxSize()) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             drawPath(
                 path = mediumColoredPath,
                 color = feature.mediumColor
@@ -346,9 +358,7 @@ fun FeatureItems(
                 painter = painterResource(id = feature.iconId),
                 contentDescription = feature.title,
                 tint = Color.White,
-                modifier = Modifier.align(
-                    Alignment.BottomStart
-                )
+                modifier = Modifier.align(Alignment.BottomStart)
             )
             Text(
                 text = "Start",
@@ -357,7 +367,7 @@ fun FeatureItems(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .clickable {
-
+                        // Handle the click
                     }
                     .align(Alignment.BottomEnd)
                     .clip(RoundedCornerShape(10.dp))
